@@ -25,7 +25,7 @@ export default function Hero() {
         dither={0}
         curvature={0.1}
         tint="#ffffff"
-        dpr={0.5}
+        dpr={0.25}
         mouseReact={true}
         mouseStrength={0.5}
         pageLoadAnimation={false}
