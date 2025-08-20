@@ -4,6 +4,7 @@ import Hero from "@/app/Hero";
 import Logotype_A from "@/app/components/logos/logotype_A";
 import ROGIX_LOGO from "@/app/components/logos/rogixLogo";
 import Sl_logo from "@/app/components/logos/sl_logo";
+import AC_type from "@/app/components/andcreate";
 
 import { Metadata } from "next";
 
@@ -22,7 +23,8 @@ export default function Home() {
         <main className="flex-1 min-h-0 ">
           <Hero />
           <div className="relative z-10 h-dvh flex flex-col items-center justify-center">
-            <h1 className="text-5 lg:text-8 font-caveat py-8">#andCreate</h1>
+
+            <h1 className="text-5 lg:text-8 text-gray-300 font-bold italic font-montserrat py-8"><AC_type /></h1>
             <dl className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8">
               <dt className="col-span-1 self-center">
                 <span className="text-3 lg:text-5 font-doto">- Web Development</span>

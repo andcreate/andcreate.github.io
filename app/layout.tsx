@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP, Doto, Caveat } from "next/font/google";
+import { Noto_Sans_JP, Doto, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const notoSansJp = Noto_Sans_JP({
@@ -12,8 +12,8 @@ const doto = Doto({
   subsets: ["latin"],
 });
 
-const caveat = Caveat({
-  variable: "--font-caveat",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
 });
 
@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${notoSansJp.variable} ${doto.variable} ${caveat.variable} antialiased`}>{children}</body>
+      <body className={`${notoSansJp.variable} ${doto.variable} ${montserrat.variable} antialiased`}>{children}</body>
     </html>
   );
 }

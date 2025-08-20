@@ -16,7 +16,9 @@ export default {
         gray4: "#0D0D0D",
         darkBackground: "#F2F2F2",
       },
-      fontFamily: {},
+      fontFamily: {
+        montserrat: ["var(--font-montserrat)"],
+      },
       keyframes: {},
       animation: {},
     },
