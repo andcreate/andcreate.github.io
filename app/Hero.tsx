@@ -12,8 +12,8 @@ export default function Hero() {
       // zIndex: -1
     }}>
       <FaultyTerminal
-        scale={2}
-        gridMul={[1, 1]}
+        scale={5}
+        gridMul={[0.5, 0.5]}
         digitSize={2}
         timeScale={0.5}
         pause={false}
@@ -21,14 +21,15 @@ export default function Hero() {
         glitchAmount={10}
         flickerAmount={10}
         noiseAmp={1}
-        chromaticAberration={10}
+        chromaticAberration={15}
         dither={0}
         curvature={0.1}
         tint="#ffffff"
+        dpr={0.5}
         mouseReact={true}
         mouseStrength={0.5}
         pageLoadAnimation={false}
-        brightness={0.25}
+        brightness={0.3}
       />
     </div>
   );
