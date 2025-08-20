@@ -1,10 +1,8 @@
 // import Image from "next/image";
 import Hero from "@/app/Hero";
 
-import Logotype_A from "@/app/components/logos/logotype_A";
-import ROGIX_LOGO from "@/app/components/logos/rogixLogo";
-import Sl_logo from "@/app/components/logos/sl_logo";
 import AC_type from "@/app/components/andcreate";
+import TargetButton from "@/app/components/button";
 
 import { Metadata } from "next";
 
@@ -16,6 +14,13 @@ export const metadata: Metadata = {
   description: "I like to create something that is a win & win for everyone.",
 };
 
+/**
+ * The root page of this Next.js app.
+ *
+ * This page is the entry point for the app, and is rendered on the server.
+ *
+ * @returns The JSX element for the root page.
+ */
 export default function Home() {
   return (
     <div className="h-screen relative">
@@ -24,41 +29,8 @@ export default function Home() {
           <Hero />
           <div className="relative z-10 h-dvh flex flex-col items-center justify-center">
 
-            <h1 className="text-5 lg:text-8 text-gray-300 font-bold italic font-montserrat py-8"><AC_type /></h1>
-            <dl className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8">
-              <dt className="col-span-1 self-center">
-                <span className="text-3 lg:text-5 font-doto">- Web Development</span>
-              </dt>
-              <dd className="col-span-1 self-center">
-                <a href="https://www.andcre.com" target="_blank">
-                  <Logotype_A style={{ width: "170px", height: "50px" }} />
-                </a>
-              </dd>
-              <dt className="col-span-1 self-center">
-                <span className="text-3 lg:text-5 font-doto">- VR Portfolio</span>
-              </dt>
-              <dd className="col-span-1 self-center">
-                <a href="https://virtual.andcre.com" target="_blank">
-                  <ROGIX_LOGO style={{ width: "50px", height: "50px" }} color={"#FFF"} />
-                </a>
-              </dd>
-              <dt className="col-span-1 self-center">
-                <span className="text-3 lg:text-5 font-doto">- Degital Contents</span>
-              </dt>
-              <dd className="col-span-1 self-center">
-                <a href="https://andcreate.booth.pm/" target="_blank">
-                  <Sl_logo style={{ width: "170px", height: "50px" }} />
-                </a>
-              </dd>
-              <dt className="col-span-1 self-center">
-                <span className="text-3 lg:text-5 font-doto">- Degital Contents Docs</span>
-              </dt>
-              <dd className="col-span-1 self-center">
-                <a href="https://andcreate.github.io/vdc/" target="_blank">
-                  Studio Louie Docs
-                </a>
-              </dd>
-            </dl>
+            <h1 className="text-5 lg:text-7 text-gray-300 font-semibold italic font-montserrat py-8"><AC_type /></h1>
+            <TargetButton />
           </div>
         </main>
         <footer className="relative z-10 flex-none">
