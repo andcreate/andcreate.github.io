@@ -1,28 +1,28 @@
-import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
-import React, { useEffect, useRef, useMemo, useCallback } from "react";
+import { Renderer, Program, Mesh, Color, Triangle } from "ogl"
+import { useEffect, useRef, useMemo, useCallback } from "react"
 
-type Vec2 = [number, number];
+type Vec2 = [number, number]
 
 export interface FaultyTerminalProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  scale?: number;
-  gridMul?: Vec2;
-  digitSize?: number;
-  timeScale?: number;
-  pause?: boolean;
-  scanlineIntensity?: number;
-  glitchAmount?: number;
-  flickerAmount?: number;
-  noiseAmp?: number;
-  chromaticAberration?: number;
-  dither?: number | boolean;
-  curvature?: number;
-  tint?: string;
-  mouseReact?: boolean;
-  mouseStrength?: number;
-  dpr?: number;
-  pageLoadAnimation?: boolean;
-  brightness?: number;
+  scale?: number
+  gridMul?: Vec2
+  digitSize?: number
+  timeScale?: number
+  pause?: boolean
+  scanlineIntensity?: number
+  glitchAmount?: number
+  flickerAmount?: number
+  noiseAmp?: number
+  chromaticAberration?: number
+  dither?: number | boolean
+  curvature?: number
+  tint?: string
+  mouseReact?: boolean
+  mouseStrength?: number
+  dpr?: number
+  pageLoadAnimation?: boolean
+  brightness?: number
 }
 
 const vertexShader = `
@@ -33,7 +33,7 @@ void main() {
   vUv = uv;
   gl_Position = vec4(position, 0.0, 1.0);
 }
-`;
+`
 
 const fragmentShader = `
 precision highp float;
@@ -71,7 +71,7 @@ float hash21(vec2 p){
 
 float noise(vec2 p)
 {
-  return sin(p.x * 10.0) * sin(p.y * (3.0 + sin(time * 0.090909))) + 0.2; 
+  return sin(p.x * 10.0) * sin(p.y * (3.0 + sin(time * 0.090909))) + 0.2;
 }
 
 mat2 rotate(float angle)
@@ -86,20 +86,20 @@ float fbm(vec2 p)
   p *= 1.1;
   float f = 0.0;
   float amp = 0.5 * uNoiseAmp;
-  
+
   mat2 modify0 = rotate(time * 0.02);
   f += amp * noise(p);
   p = modify0 * p * 2.0;
   amp *= 0.454545; // 1/2.2
-  
+
   mat2 modify1 = rotate(time * 0.02);
   f += amp * noise(p);
   p = modify1 * p * 2.0;
   amp *= 0.454545;
-  
+
   mat2 modify2 = rotate(time * 0.08);
   f += amp * noise(p);
-  
+
   return f;
 }
 
@@ -108,7 +108,7 @@ float pattern(vec2 p, out vec2 q, out vec2 r) {
   vec2 offset0 = vec2(0.0);
   mat2 rot01 = rotate(0.1 * time);
   mat2 rot1 = rotate(0.1);
-  
+
   q = vec2(fbm(p + offset1), fbm(rot01 * p + offset1));
   r = vec2(fbm(rot1 * q + offset0), fbm(q + offset0));
   return fbm(p + r);
@@ -120,42 +120,42 @@ float digit(vec2 p){
     p = p * grid;
     vec2 q, r;
     float intensity = pattern(s * 0.1, q, r) * 1.3 - 0.03;
-    
+
     if(uUseMouse > 0.5){
         vec2 mouseWorld = uMouse * uScale;
         float distToMouse = distance(s, mouseWorld);
         float mouseInfluence = exp(-distToMouse * 8.0) * uMouseStrength * 10.0;
         intensity += mouseInfluence;
-        
+
         float ripple = sin(distToMouse * 20.0 - iTime * 5.0) * 0.1 * mouseInfluence;
         intensity += ripple;
     }
-    
+
     if(uUsePageLoadAnimation > 0.5){
         float cellRandom = fract(sin(dot(s, vec2(12.9898, 78.233))) * 43758.5453);
         float cellDelay = cellRandom * 0.8;
         float cellProgress = clamp((uPageLoadProgress - cellDelay) / 0.2, 0.0, 1.0);
-        
+
         float fadeAlpha = smoothstep(0.0, 1.0, cellProgress);
         intensity *= fadeAlpha;
     }
-    
+
     p = fract(p);
     p *= uDigitSize;
-    
+
     float px5 = p.x * 5.0;
     float py5 = (1.0 - p.y) * 5.0;
     float x = fract(px5);
     float y = fract(py5);
-    
+
     float i = floor(py5) - 2.0;
     float j = floor(px5) - 2.0;
     float n = i * i + j * j;
     float f = n * 0.0625;
-    
+
     float isOn = step(0.1, intensity - f);
     float brightness = isOn * (0.2 + y * 0.8) * (0.75 + x * 0.25);
-    
+
     return step(0.0, p.x) * step(p.x, 1.0) * step(0.0, p.y) * step(p.y, 1.0) * brightness;
 }
 
@@ -172,10 +172,10 @@ float displace(vec2 look)
 }
 
 vec3 getColor(vec2 p){
-    
+
     float bar = step(mod(p.y + time * 20.0, 1.0), 0.2) * 0.4 + 1.0; // more efficient than ternary
     bar *= uScanlineIntensity;
-    
+
     float displacement = displace(p);
     p.x += displacement;
 
@@ -185,12 +185,12 @@ vec3 getColor(vec2 p){
     }
 
     float middle = digit(p);
-    
+
     const float off = 0.002;
     float sum = digit(p + vec2(-off, -off)) + digit(p + vec2(0.0, -off)) + digit(p + vec2(off, -off)) +
                 digit(p + vec2(-off, 0.0)) + digit(p + vec2(0.0, 0.0)) + digit(p + vec2(off, 0.0)) +
                 digit(p + vec2(-off, off)) + digit(p + vec2(0.0, off)) + digit(p + vec2(off, off));
-    
+
     vec3 baseColor = vec3(0.9) * middle + sum * 0.1 * vec3(1.0) * bar;
     return baseColor;
 }
@@ -209,7 +209,7 @@ void main() {
     if(uCurvature != 0.0){
       uv = barrel(uv);
     }
-    
+
     vec2 p = uv * uScale;
     vec3 col = getColor(p);
 
@@ -229,21 +229,21 @@ void main() {
 
     gl_FragColor = vec4(col, 1.0);
 }
-`;
+`
 
 function hexToRgb(hex: string): [number, number, number] {
-  let h = hex.replace("#", "").trim();
+  let h = hex.replace("#", "").trim()
   if (h.length === 3)
     h = h
       .split("")
       .map((c) => c + c)
-      .join("");
-  const num = parseInt(h, 16);
+      .join("")
+  const num = parseInt(h, 16)
   return [
     ((num >> 16) & 255) / 255,
     ((num >> 8) & 255) / 255,
     (num & 255) / 255,
-  ];
+  ]
 }
 
 export default function FaultyTerminal({
@@ -269,48 +269,48 @@ export default function FaultyTerminal({
   style,
   ...rest
 }: FaultyTerminalProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const programRef = useRef<Program>(null);
-  const rendererRef = useRef<Renderer>(null);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
-  const smoothMouseRef = useRef({ x: 0.5, y: 0.5 });
-  const frozenTimeRef = useRef(0);
-  const rafRef = useRef<number>(0);
-  const loadAnimationStartRef = useRef<number>(0);
-  const timeOffsetRef = useRef<number>(Math.random() * 100);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const programRef = useRef<Program>(null)
+  const rendererRef = useRef<Renderer>(null)
+  const mouseRef = useRef({ x: 0.5, y: 0.5 })
+  const smoothMouseRef = useRef({ x: 0.5, y: 0.5 })
+  const frozenTimeRef = useRef(0)
+  const rafRef = useRef<number>(0)
+  const loadAnimationStartRef = useRef<number>(0)
+  const timeOffsetRef = useRef<number>(Math.random() * 100)
 
-  const tintVec = useMemo(() => hexToRgb(tint), [tint]);
+  const tintVec = useMemo(() => hexToRgb(tint), [tint])
 
   const ditherValue = useMemo(
     () => (typeof dither === "boolean" ? (dither ? 1 : 0) : dither),
     [dither]
-  );
+  )
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    const ctn = containerRef.current;
-    if (!ctn) return;
-    const rect = ctn.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = 1 - (e.clientY - rect.top) / rect.height;
-    mouseRef.current = { x, y };
-  }, []);
+    const ctn = containerRef.current
+    if (!ctn) return
+    const rect = ctn.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = 1 - (e.clientY - rect.top) / rect.height
+    mouseRef.current = { x, y }
+  }, [])
 
   useEffect(() => {
-    const ctn = containerRef.current;
-    if (!ctn) return;
+    const ctn = containerRef.current
+    if (!ctn) return
 
-    const renderer = new Renderer({ 
+    const renderer = new Renderer({
       dpr,
       antialias: false,
       depth: false,
       stencil: false,
       powerPreference: "high-performance"
-    });
-    rendererRef.current = renderer;
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 1);
+    })
+    rendererRef.current = renderer
+    const gl = renderer.gl
+    gl.clearColor(0, 0, 0, 1)
 
-    const geometry = new Triangle(gl);
+    const geometry = new Triangle(gl)
 
     const program = new Program(gl, {
       vertex: vertexShader,
@@ -348,75 +348,75 @@ export default function FaultyTerminal({
         uUsePageLoadAnimation: { value: pageLoadAnimation ? 1 : 0 },
         uBrightness: { value: brightness },
       },
-    });
-    programRef.current = program;
+    })
+    programRef.current = program
 
-    const mesh = new Mesh(gl, { geometry, program });
+    const mesh = new Mesh(gl, { geometry, program })
 
     function resize() {
-      if (!ctn || !renderer) return;
-      renderer.setSize(ctn.offsetWidth, ctn.offsetHeight);
+      if (!ctn || !renderer) return
+      renderer.setSize(ctn.offsetWidth, ctn.offsetHeight)
       program.uniforms.iResolution.value = new Color(
         gl.canvas.width,
         gl.canvas.height,
         gl.canvas.width / gl.canvas.height
-      );
+      )
     }
 
-    const resizeObserver = new ResizeObserver(() => resize());
-    resizeObserver.observe(ctn);
-    resize();
+    const resizeObserver = new ResizeObserver(() => resize())
+    resizeObserver.observe(ctn)
+    resize()
 
     const update = (t: number) => {
-      rafRef.current = requestAnimationFrame(update);
+      rafRef.current = requestAnimationFrame(update)
 
       if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
-        loadAnimationStartRef.current = t;
+        loadAnimationStartRef.current = t
       }
 
       if (!pause) {
-        const elapsed = (t * 0.001 + timeOffsetRef.current) * timeScale;
-        program.uniforms.iTime.value = elapsed;
-        frozenTimeRef.current = elapsed;
+        const elapsed = (t * 0.001 + timeOffsetRef.current) * timeScale
+        program.uniforms.iTime.value = elapsed
+        frozenTimeRef.current = elapsed
       } else {
-        program.uniforms.iTime.value = frozenTimeRef.current;
+        program.uniforms.iTime.value = frozenTimeRef.current
       }
 
       if (pageLoadAnimation && loadAnimationStartRef.current > 0) {
-        const animationDuration = 2000;
-        const animationElapsed = t - loadAnimationStartRef.current;
-        const progress = Math.min(animationElapsed / animationDuration, 1);
-        program.uniforms.uPageLoadProgress.value = progress;
+        const animationDuration = 2000
+        const animationElapsed = t - loadAnimationStartRef.current
+        const progress = Math.min(animationElapsed / animationDuration, 1)
+        program.uniforms.uPageLoadProgress.value = progress
       }
 
       if (mouseReact) {
-        const dampingFactor = 0.12;
-        const smoothMouse = smoothMouseRef.current;
-        const mouse = mouseRef.current;
-        smoothMouse.x += (mouse.x - smoothMouse.x) * dampingFactor;
-        smoothMouse.y += (mouse.y - smoothMouse.y) * dampingFactor;
+        const dampingFactor = 0.12
+        const smoothMouse = smoothMouseRef.current
+        const mouse = mouseRef.current
+        smoothMouse.x += (mouse.x - smoothMouse.x) * dampingFactor
+        smoothMouse.y += (mouse.y - smoothMouse.y) * dampingFactor
 
-        const mouseUniform = program.uniforms.uMouse.value as Float32Array;
-        mouseUniform[0] = smoothMouse.x;
-        mouseUniform[1] = smoothMouse.y;
+        const mouseUniform = program.uniforms.uMouse.value as Float32Array
+        mouseUniform[0] = smoothMouse.x
+        mouseUniform[1] = smoothMouse.y
       }
 
-      renderer.render({ scene: mesh });
-    };
-    rafRef.current = requestAnimationFrame(update);
-    ctn.appendChild(gl.canvas);
+      renderer.render({ scene: mesh })
+    }
+    rafRef.current = requestAnimationFrame(update)
+    ctn.appendChild(gl.canvas)
 
-    if (mouseReact) ctn.addEventListener("mousemove", handleMouseMove);
+    if (mouseReact) ctn.addEventListener("mousemove", handleMouseMove)
 
     return () => {
-      cancelAnimationFrame(rafRef.current);
-      resizeObserver.disconnect();
-      if (mouseReact) ctn.removeEventListener("mousemove", handleMouseMove);
-      if (gl.canvas.parentElement === ctn) ctn.removeChild(gl.canvas);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
-      loadAnimationStartRef.current = 0;
-      timeOffsetRef.current = Math.random() * 100;
-    };
+      cancelAnimationFrame(rafRef.current)
+      resizeObserver.disconnect()
+      if (mouseReact) ctn.removeEventListener("mousemove", handleMouseMove)
+      if (gl.canvas.parentElement === ctn) ctn.removeChild(gl.canvas)
+      gl.getExtension("WEBGL_lose_context")?.loseContext()
+      loadAnimationStartRef.current = 0
+      timeOffsetRef.current = Math.random() * 100
+    }
   }, [
     dpr,
     pause,
@@ -437,14 +437,14 @@ export default function FaultyTerminal({
     pageLoadAnimation,
     brightness,
     handleMouseMove,
-  ]);
+  ])
 
   return (
     <div
       ref={containerRef}
-      className={`w-full h-full relative overflow-hidden ${className}`}
+      className={`w-full h-full relative overflow-hidden ${className ?? ''}`}
       style={style}
       {...rest}
     />
-  );
+  )
 }
