@@ -1,0 +1,22 @@
+Codemap Update Report
+=====================
+Date: 2026-01-31
+
+Status: NEW (no previous codemaps)
+
+Files Created:
+- codemaps/architecture.md
+- codemaps/frontend.md
+
+Change Summary:
+- Initial codemap creation
+- No backend (static site)
+- No data models (no database)
+
+Components Documented:
+- Active: 4 (App, Hero, LightRays, ChromaGrid)
+- Legacy: 4 (FaultyTerminal, FuzzyText, TargetCursor, AndCreateType)
+
+Dependencies:
+- React 19, Vite 6, Tailwind CSS 4
+- GSAP (animation), OGL (WebGL)
