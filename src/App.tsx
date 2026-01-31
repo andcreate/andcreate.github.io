@@ -14,7 +14,7 @@ const gridItems = [
   {
     image: "/thumb_rogix.png",
     title: "ROGIX Portfolio",
-    subtitle: "VR PROJECT",
+    subtitle: "VR Project",
     handle: "@beta",
     borderColor: "#777777",
     gradient: "linear-gradient(210deg, #191919, #000)",
