@@ -9,7 +9,7 @@ const gridItems = [
     handle: "@alpha",
     borderColor: "#249aa0",
     gradient: "linear-gradient(145deg, #165a62, #000)",
-    url: "#",
+    url: "https://andcre.com/",
   },
   {
     image: "/thumb_rogix.png",
@@ -18,7 +18,7 @@ const gridItems = [
     handle: "@beta",
     borderColor: "#777777",
     gradient: "linear-gradient(210deg, #191919, #000)",
-    url: "#",
+    url: "https://virtual.andcre.com/",
   },
   {
     image: "/thumb_booth.png",
@@ -27,7 +27,7 @@ const gridItems = [
     handle: "@gamma",
     borderColor: "#ffa4a9",
     gradient: "linear-gradient(165deg, #fc4d50, #000)",
-    url: "#",
+    url: "https://andcreate.booth.pm/",
   },
   {
     image: "/thumb_docs.png",
@@ -36,7 +36,7 @@ const gridItems = [
     handle: "@delta",
     borderColor: "#f2caad",
     gradient: "linear-gradient(195deg, #bf9169, #000)",
-    url: "#",
+    url: "https://andcreate.github.io/vdc/",
   },
 ];
 
