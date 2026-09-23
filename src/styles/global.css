@@ -1,0 +1,87 @@
+/* Scan src/ only, so .claude/ docs never leak utilities into the build. */
+@import "tailwindcss" source("../");
+@import "@fontsource-variable/bricolage-grotesque/opsz.css";
+@import "@fontsource/zen-kaku-gothic-new/400.css";
+@import "@fontsource/zen-kaku-gothic-new/500.css";
+
+/*
+ * Palette: neutral monochrome + one vermilion accent (derived from andCreate's brand rust).
+ * Tokens swap with prefers-color-scheme; the canvas artwork reads the same tokens.
+ */
+:root {
+  --bg: #ededeb;
+  --art-bg: #e5e5e2;
+  --ink: #141414;
+  --muted: #595956;
+  --line: rgb(20 20 20 / 0.14);
+  --accent: #c93a1c;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f10;
+    --art-bg: #161617;
+    --ink: #ececea;
+    --muted: #9b9b97;
+    --line: rgb(236 236 234 / 0.14);
+    --accent: #f0633f;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-display: "Bricolage Grotesque Variable", "Zen Kaku Gothic New", system-ui, sans-serif;
+  --font-sans: "Zen Kaku Gothic New", "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --color-bg: var(--bg);
+  --color-art-bg: var(--art-bg);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background-color: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+}
+
+/* Load-in: the list writes itself in after the headline (hierarchy, not decoration). */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: reveal 1s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 150ms);
+  }
+
+  .art-fade {
+    animation: art-fade 1.6s ease-out both;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes art-fade {
+  from {
+    opacity: 0;
+  }
+}

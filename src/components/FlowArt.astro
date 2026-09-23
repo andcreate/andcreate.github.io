@@ -1,0 +1,22 @@
+---
+/**
+ * Generative ampersand artwork. Purely decorative; hidden from assistive tech.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class:list={["art-fade relative overflow-hidden bg-art-bg", className]} aria-hidden="true">
+  <canvas data-flow-art class="absolute inset-0 block size-full"></canvas>
+</div>
+
+<script>
+  import { mountFlowField } from "../scripts/flowField";
+
+  document.querySelectorAll<HTMLCanvasElement>("canvas[data-flow-art]").forEach((canvas) => {
+    mountFlowField(canvas);
+  });
+</script>

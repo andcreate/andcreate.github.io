@@ -1,0 +1,66 @@
+---
+import arrowIcon from "@phosphor-icons/core/assets/light/arrow-up-right-light.svg?raw";
+import type { Destination } from "../data/links";
+
+/**
+ * Typographic index of the four entry points.
+ */
+interface Props {
+  items: readonly Destination[];
+  /** Offset for the load-in stagger, so the list follows the headline. */
+  startIndex?: number;
+}
+
+const { items, startIndex = 0 } = Astro.props;
+---
+
+<ul class="border-b border-line">
+  {
+    items.map((item, i) => (
+      <li class="reveal border-t border-line" style={`--i: ${startIndex + i}`}>
+        <a
+          href={item.href}
+          data-destination={item.id}
+          class="group relative grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1 py-5 outline-offset-0 md:py-6"
+        >
+          <span class="flex flex-col gap-1.5">
+            <span class="font-display text-[1.75rem] leading-[1.1] font-medium tracking-tight transition-transform duration-500 ease-out-expo group-hover:translate-x-2 group-focus-visible:translate-x-2 md:text-4xl">
+              {item.title}
+            </span>
+            <span class="text-sm leading-relaxed text-muted [word-break:auto-phrase]">
+              <span class="font-medium text-ink">{item.brand}</span>
+              <span class="ml-2">{item.description}</span>
+            </span>
+          </span>
+          <span class="flex items-center gap-3 self-start pt-2 text-muted">
+            <span class="hidden font-display text-xs tracking-wide 2xl:inline">{item.label}</span>
+            <span
+              aria-hidden="true"
+              class="block size-6 transition-transform duration-500 ease-out-expo group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-accent group-focus-visible:text-accent [&>svg]:size-full"
+              set:html={arrowIcon}
+            />
+          </span>
+          <span class="pointer-events-none absolute inset-x-0 -bottom-px h-px origin-left scale-x-0 bg-accent transition-transform duration-700 ease-out-expo group-hover:scale-x-100 group-focus-visible:scale-x-100" />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<script>
+  // Tint the artwork while a destination is hovered or focused.
+  const emit = (id: string | null) =>
+    window.dispatchEvent(new CustomEvent("destination:hover", { detail: id }));
+
+  document.querySelectorAll<HTMLAnchorElement>("a[data-destination]").forEach((link) => {
+    const id = link.dataset.destination ?? null;
+    // Mouse only: on touch, pointerleave may never fire and the tint would stick.
+    link.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && emit(id));
+    link.addEventListener(
+      "pointerleave",
+      (e) => e.pointerType === "mouse" && emit(link.matches(":focus-visible") ? id : null),
+    );
+    link.addEventListener("focus", () => emit(id));
+    link.addEventListener("blur", () => emit(null));
+  });
+</script>
