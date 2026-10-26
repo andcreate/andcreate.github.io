@@ -1,0 +1,15 @@
+---
+/**
+ * "andCreate" fitted to the full width of its container, letters rising in on entry.
+ * コンテナ幅いっぱいに合わせた「andCreate」。入場時に 1 文字ずつ立ち上がる。
+ */
+const NAME = "andCreate";
+---
+
+<span data-reveal class="block [container-type:inline-size]">
+  <span
+    class="block overflow-hidden pt-[0.06em] font-display text-[length:calc(100cqi/6.62)] leading-[0.86] font-bold tracking-[-0.045em] whitespace-nowrap"
+  >
+    {[...NAME].map((letter, i) => <span class="wordmark-letter" style={`--i: ${i}`}>{letter}</span>)}
+  </span>
+</span>

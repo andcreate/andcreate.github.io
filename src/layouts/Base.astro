@@ -19,15 +19,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#ededeb" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0f0f10" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#08090a" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
+    <!-- CSS animations run only once script has started. / スクリプト起動時だけ入場アニメーションを有効化 -->
+    <script is:inline>document.documentElement.classList.add("js");</script>
   </head>
-  <body class="min-h-[100dvh] bg-bg font-sans text-ink">
+  <body class="min-h-[100svh] font-sans text-body text-ink">
     <slot />
   </body>
 </html>

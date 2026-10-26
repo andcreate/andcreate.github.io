@@ -1,0 +1,21 @@
+---
+/**
+ * The real-time stage: one fixed canvas, clipped to every [data-stage-window] on the page.
+ * Purely decorative; hidden from assistive tech.
+ * リアルタイムのステージ。固定キャンバス 1 枚を、ページ上の [data-stage-window] に切り抜いて見せる。
+ * 装飾のみなので支援技術からは隠す。
+ */
+---
+
+<canvas
+  data-stage
+  aria-hidden="true"
+  class="pointer-events-none fixed inset-0 z-30 block size-full"
+  style="visibility: hidden"></canvas>
+
+<script>
+  import { mountStage } from "../scripts/stage/mount";
+
+  const canvas = document.querySelector<HTMLCanvasElement>("canvas[data-stage]");
+  if (canvas) mountStage(canvas);
+</script>

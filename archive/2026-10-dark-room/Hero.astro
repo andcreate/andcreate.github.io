@@ -1,0 +1,55 @@
+---
+import type { Destination } from "../data/links";
+import Wordmark from "./Wordmark.astro";
+
+/**
+ * First screen: the live stage on top, the name across the band beneath it.
+ * ファーストビュー：上にライブステージ、その下の帯に社名を全幅で。
+ */
+interface Props {
+  items: readonly Destination[];
+  primary: Destination;
+}
+
+const { items, primary } = Astro.props;
+---
+
+<header class="relative flex min-h-[100svh] flex-col">
+  <div data-stage-window class="relative h-[50svh] w-full md:h-[58svh]">
+    <nav aria-label="サイト一覧" class="relative z-40 flex justify-end gap-5 px-gutter pt-5 text-[0.9375rem] md:gap-7 md:pt-6">
+      {
+        items.map((item) => (
+          <a
+            href={item.href}
+            data-destination={item.id}
+            class="rise hidden py-2 text-ink/85 transition-colors duration-300 hover:text-ink focus-visible:text-ink sm:inline-block"
+            style="--i: 1"
+          >
+            {item.title}
+          </a>
+        ))
+      }
+      <a href="#works" class="rise py-2 text-ink/85 sm:hidden" style="--i: 1">Menu</a>
+    </nav>
+  </div>
+
+  <div class="flex flex-1 flex-col justify-between gap-8 px-gutter pt-6 pb-4 md:pb-7">
+    <div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between md:gap-12">
+      <p class="rise max-w-[34rem] text-body leading-relaxed [word-break:auto-phrase]" style="--i: 2">
+        Webエンジニア / Unityテクニカルアーティスト。Webサイト制作から、音楽MV・3Dライブステージ・VRChatワールドまで。
+      </p>
+      <a
+        href={primary.href}
+        class="rise group inline-flex min-h-12 shrink-0 items-center gap-3 self-start bg-accent px-6 text-[0.9375rem] font-medium text-accent-ink transition-transform duration-300 ease-out-expo hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+        style="--i: 3"
+      >
+        3Dライブの制作実績を見る
+        <span aria-hidden="true" class="transition-transform duration-300 ease-out-expo group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+
+    <h1 class="text-ink">
+      <Wordmark />
+    </h1>
+  </div>
+</header>

@@ -1,0 +1,58 @@
+---
+import type { Destination } from "../data/links";
+
+/**
+ * The four entry points as one row along the bottom edge (two by two on a phone).
+ * Hover or focus reshapes the background cloud into that destination's form.
+ * 4 つの入口を下端に 1 列で（スマホでは 2×2）。ホバー/フォーカスで背景の雲がその形に変わる。
+ */
+interface Props {
+  items: readonly Destination[];
+  /** Offset for the load-in stagger. / 入場アニメーションの開始順 */
+  startIndex?: number;
+}
+
+const { items, startIndex = 0 } = Astro.props;
+---
+
+<ul class="grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-4 lg:gap-x-10">
+  {
+    items.map((item, i) => (
+      <li class="rise" style={`--i: ${startIndex + i}`}>
+        <a href={item.href} data-destination={item.id} class="group flex flex-col gap-2 py-1">
+          <span class="flex items-baseline justify-between gap-3">
+            <span class="font-display text-item leading-none font-light tracking-[-0.025em] transition-transform duration-500 ease-out-expo group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5">
+              {item.title}
+            </span>
+            <span
+              aria-hidden="true"
+              class="text-muted transition duration-500 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent group-focus-visible:text-accent"
+            >
+              ↗
+            </span>
+          </span>
+          <span class="text-small leading-relaxed text-muted [word-break:auto-phrase]">
+            <span class="text-ink">{item.brand}</span>
+            <span class="max-sm:block sm:ml-2">{item.description}</span>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<script>
+  // Hover and focus set the background's shape; leaving the list returns it to "&".
+  // ホバーとフォーカスで背景の形を決め、リストから離れると「&」に戻す。
+  const emit = (id: string | null) => window.dispatchEvent(new CustomEvent("destination:hover", { detail: id }));
+
+  document.querySelectorAll<HTMLAnchorElement>("a[data-destination]").forEach((link) => {
+    const id = link.dataset.destination ?? null;
+    // Mouse only: on touch, pointerleave may never fire and the shape would stick.
+    // マウスのみ：タッチでは pointerleave が来ないことがあり、形が戻らなくなるため。
+    link.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && emit(id));
+    link.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && emit(null));
+    link.addEventListener("focus", () => emit(id));
+    link.addEventListener("blur", () => emit(null));
+  });
+</script>

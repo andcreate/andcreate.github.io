@@ -1,0 +1,121 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { Destination } from "../data/links";
+import web from "../assets/works/web-andcre.png";
+import virtual from "../assets/works/virtual-castle-stage.png";
+import booth from "../assets/works/booth-studiolouie.png";
+import docs from "../assets/works/docs-vdc.png";
+
+/**
+ * Pinned story: the stage stays in its window while the four destinations pass beside it.
+ * Each destination that reaches the middle of the screen sets the stage's lighting cue.
+ * 固定ストーリー：ステージを窓に留めたまま、横を 4 つの行き先が通り過ぎる。
+ * 画面中央に来た行き先が、ステージの照明キューを切り替える。
+ */
+interface Props {
+  items: readonly Destination[];
+}
+
+const { items } = Astro.props;
+
+// `fit`: the BOOTH banner is 3:1, so it is shown whole on its own beige rather than cropped.
+// `fit`：BOOTH のバナーは 3:1 なので、切り抜かず自身のベージュ地に全体を収める。
+const pictures: Record<string, { src: ImageMetadata; alt: string; fit: string }> = {
+  web: { src: web, alt: "アンドクリエイトのWeb制作サービスのキービジュアル", fit: "object-cover" },
+  virtual: { src: virtual, alt: "制作したVRChatの3Dライブステージ。城とバラの花壇、LEDスクリーン", fit: "object-cover" },
+  booth: { src: booth, alt: "#StudioLouie のロゴと、寝そべる柴犬のイラスト", fit: "object-contain bg-[#f1e1ce] px-[6%]" },
+  docs: { src: docs, alt: "#StudioLouie Documents サイトのトップページ", fit: "object-cover object-top" },
+};
+---
+
+<section id="works" aria-labelledby="works-title" class="relative lg:grid lg:grid-cols-2">
+  <div data-stage-window class="h-[46svh] bg-bg lg:sticky lg:top-0 lg:h-svh"></div>
+
+  <div class="relative px-gutter pt-16 pb-32 lg:pt-[18svh] lg:pb-[30svh] lg:pl-12">
+    <div class="flex flex-col gap-5">
+      <h2 id="works-title" class="rise font-display text-head leading-[1.02] font-medium tracking-[-0.03em]">Works &amp; Shop</h2>
+      <p class="rise max-w-[30rem] text-lead leading-snug [word-break:auto-phrase]" style="--i: 1">
+        関わる全ての人にプラスとなるものを。4つの窓口から、それぞれの仕事へ。
+      </p>
+    </div>
+
+    <ul class="mt-24 flex flex-col gap-32 lg:mt-[22svh] lg:gap-[26svh]">
+      {
+        items.map((item) => {
+          const picture = pictures[item.id];
+          return (
+            <li data-cue={item.id}>
+              <a href={item.href} data-destination={item.id} class="group flex flex-col gap-6">
+                <span class="flex flex-col gap-3">
+                  <span class="rise flex items-baseline justify-between gap-6" style="--i: 1">
+                    <span class="font-display text-head leading-none font-medium tracking-[-0.03em] transition-colors duration-300 group-hover:text-accent group-focus-visible:text-accent">
+                      {item.title}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      class="text-lead transition-transform duration-500 ease-out-expo group-hover:translate-x-1 group-hover:-translate-y-1"
+                    >
+                      ↗
+                    </span>
+                  </span>
+                  <span class="rise flex flex-col gap-1 text-body leading-relaxed [word-break:auto-phrase]" style="--i: 2">
+                    <span>
+                      <span class="font-medium">{item.brand}</span>
+                      <span class="ml-2">{item.description}</span>
+                    </span>
+                    <span class="text-small text-muted">{item.label}</span>
+                  </span>
+                </span>
+                {picture && (
+                  <span class="rise block overflow-hidden bg-surface" style="--i: 3">
+                    <Image
+                      src={picture.src}
+                      alt={picture.alt}
+                      widths={[480, 800, 1200]}
+                      sizes="(min-width: 1024px) 45vw, 92vw"
+                      class:list={[
+                        "aspect-[16/10] w-full brightness-[0.85] transition-[transform,filter] duration-700 ease-out-expo group-hover:scale-[1.03] group-hover:brightness-100 group-focus-visible:brightness-100",
+                        picture.fit,
+                      ]}
+                    />
+                  </span>
+                )}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  // Hover/focus and scroll both set the lighting cue; the most recent one wins.
+  // ホバー/フォーカスとスクロールの両方が照明キューを決める（最後に起きたものが優先）。
+  const emit = (id: string | null) => window.dispatchEvent(new CustomEvent("destination:hover", { detail: id }));
+
+  document.querySelectorAll<HTMLAnchorElement>("a[data-destination]").forEach((link) => {
+    const id = link.dataset.destination ?? null;
+    // Mouse only: on touch, pointerleave may never fire and the cue would stick.
+    // マウスのみ：タッチでは pointerleave が来ないことがあり、キューが残るため。
+    link.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && emit(id));
+    link.addEventListener("focus", () => emit(id));
+  });
+
+  const rows = document.querySelectorAll<HTMLElement>("[data-cue]");
+  const section = document.getElementById("works");
+  const rowObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) if (entry.isIntersecting) emit((entry.target as HTMLElement).dataset.cue ?? null);
+    },
+    { rootMargin: "-45% 0px -45% 0px" },
+  );
+  rows.forEach((row) => rowObserver.observe(row));
+
+  if (section) {
+    new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) emit(null);
+    }).observe(section);
+  }
+</script>

@@ -1,0 +1,54 @@
+---
+import { Image } from "astro:assets";
+import type { Destination } from "../data/links";
+import live from "../assets/works/vrchat-live.jpg";
+import Wordmark from "./Wordmark.astro";
+
+/**
+ * Closing screen: the name across one last photograph of a live stage.
+ * 締めの画面：ライブステージの写真に社名を全幅で重ねる。
+ */
+interface Props {
+  items: readonly Destination[];
+  founded: number;
+}
+
+const { items, founded } = Astro.props;
+---
+
+<footer class="relative isolate flex min-h-[88svh] flex-col justify-between overflow-hidden px-gutter pt-8 pb-6 md:min-h-svh md:pb-8">
+  <Image
+    src={live}
+    alt=""
+    widths={[800, 1400, 2200]}
+    sizes="100vw"
+    class="drift absolute inset-0 -z-10 size-full object-cover object-[50%_35%] brightness-[0.62]"
+  />
+
+  <div class="flex flex-col gap-8 sm:flex-row sm:justify-between">
+    <ul data-reveal class="flex flex-col gap-2">
+      {
+        items.map((item, i) => (
+          <li class="rise" style={`--i: ${i}`}>
+            <a href={item.href} class="inline-block py-1 underline-offset-4 hover:underline focus-visible:underline">
+              {item.title}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="rise flex max-w-[22rem] flex-col gap-2 sm:text-right" style="--i: 2">
+      <h2 class="font-medium">お問い合わせ</h2>
+      <a href="https://andcre.com/" class="py-1 underline-offset-4 hover:underline focus-visible:underline">andcre.com</a>
+      <a href="https://x.com/ROGIX_VR" class="py-1 underline-offset-4 hover:underline focus-visible:underline">X @ROGIX_VR</a>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-3">
+    <Wordmark />
+    <div class="flex flex-col gap-1 text-small text-ink/80 sm:flex-row sm:justify-between">
+      <small class="text-small">&copy; {founded} andCreate</small>
+      <span>写真：ROGIX Activity 制作の VRChat ライブステージ</span>
+    </div>
+  </div>
+</footer>

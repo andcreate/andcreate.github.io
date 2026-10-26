@@ -1,38 +1,41 @@
 ---
 import Base from "../layouts/Base.astro";
-import FlowArt from "../components/FlowArt.astro";
-import DestinationList from "../components/DestinationList.astro";
+import Field from "../components/Field.astro";
+import DestinationIndex from "../components/DestinationIndex.astro";
 import { destinations } from "../data/links";
 
 const FOUNDED = 2013;
+const NAME = "andCreate";
 ---
 
 <Base
   title="andCreate"
   description="アンドクリエイトの入口。Web制作、VRChatワールド・3Dライブ制作、#StudioLouie のアセット販売とドキュメントへ。"
 >
-  <div class="grid min-h-[100dvh] grid-cols-1 lg:grid-cols-12">
-    <FlowArt class="h-[42svh] min-h-64 lg:sticky lg:top-0 lg:col-span-6 lg:h-svh xl:col-span-7" />
+  <Field />
+  <!-- Phone: one column, the meta line drops to the very end. / スマホは1列で、補足情報を最後に回す -->
+  <div
+    class="flex min-h-[100svh] flex-col gap-8 px-gutter pt-5 pb-6 sm:grid sm:grid-cols-[1fr_auto] sm:grid-rows-[auto_1fr_auto] sm:gap-x-10 md:pt-7 md:pb-8"
+  >
+    <p class="rise max-w-[30rem] leading-relaxed [word-break:auto-phrase]" style="--i: 0">
+      Web engineer &amp; Unity technical artist. From websites to music videos, 3D live shows and VRChat worlds.
+    </p>
+    <footer class="rise order-last text-small leading-relaxed text-muted sm:order-none sm:text-right" style="--i: 1">
+      Building something good for everyone involved.<br />
+      Chiba, Japan · <small class="text-small">&copy; {FOUNDED} andCreate</small>
+    </footer>
 
-    <div class="flex flex-col justify-between gap-16 px-4 pt-10 pb-8 sm:px-8 lg:col-span-6 lg:min-h-[100dvh] lg:px-12 lg:pt-24 lg:pb-10 xl:col-span-5 xl:px-16">
-      <main class="flex flex-col gap-12 lg:gap-16">
-        <header class="flex flex-col gap-4">
-          <h1 class="reveal font-display text-6xl leading-[0.95] font-semibold tracking-tighter md:text-7xl" style="--i: 0">
-            andCreate
-          </h1>
-          <p class="reveal text-base leading-relaxed text-muted [word-break:auto-phrase]" style="--i: 1">
-            関わる全ての人にプラスとなるものを
-          </p>
-        </header>
+    <main class="contents">
+      <div class="w-full [container-type:inline-size] max-sm:pt-[4svh] sm:col-span-2 sm:self-center">
+        <h1 class="font-display text-[length:calc(100cqi/4.43)] leading-[0.9] font-light tracking-[-0.055em] whitespace-nowrap">
+          <span class="sr-only">{NAME}</span>
+          <span aria-hidden="true">{[...NAME].map((letter, i) => <span class="letter" style={`--i: ${i}`}>{letter}</span>)}</span>
+        </h1>
+      </div>
 
-        <nav aria-label="サイト一覧">
-          <DestinationList items={destinations} startIndex={2} />
-        </nav>
-      </main>
-
-      <footer class="reveal text-xs text-muted" style={`--i: ${destinations.length + 2}`}>
-        <small class="text-xs">&copy; {FOUNDED} andCreate</small>
-      </footer>
-    </div>
+      <nav aria-label="サイト一覧" class="mt-auto sm:col-span-2 sm:mt-0">
+        <DestinationIndex items={destinations} startIndex={2} />
+      </nav>
+    </main>
   </div>
 </Base>

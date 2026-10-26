@@ -1,44 +1,40 @@
 /* Scan src/ only, so .claude/ docs never leak utilities into the build. */
+/* src/ だけを走査し、.claude/ のドキュメントからユーティリティが混入しないようにする。 */
 @import "tailwindcss" source("../");
-@import "@fontsource-variable/bricolage-grotesque/opsz.css";
+@import "@fontsource/stack-sans-headline/300.css";
+@import "@fontsource/stack-sans-text/400.css";
+@import "@fontsource/stack-sans-text/500.css";
 @import "@fontsource/zen-kaku-gothic-new/400.css";
 @import "@fontsource/zen-kaku-gothic-new/500.css";
 
 /*
- * Palette: neutral monochrome + one vermilion accent (derived from andCreate's brand rust).
- * Tokens swap with prefers-color-scheme; the canvas artwork reads the same tokens.
+ * Dark only: the particle field is additive light and needs a dark ground.
+ * The WebGL field reads these tokens. One accent, the vermilion carried over from the old page.
+ * ダーク固定：パーティクルは加算合成の光なので暗い地が必要。WebGL もこのトークンを読む。
+ * アクセントは旧ページから引き継いだ朱色 1 色。
  */
 :root {
-  --bg: #ededeb;
-  --art-bg: #e5e5e2;
-  --ink: #141414;
-  --muted: #595956;
-  --line: rgb(20 20 20 / 0.14);
-  --accent: #c93a1c;
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f0f10;
-    --art-bg: #161617;
-    --ink: #ececea;
-    --muted: #9b9b97;
-    --line: rgb(236 236 234 / 0.14);
-    --accent: #f0633f;
-    color-scheme: dark;
-  }
+  --bg: #08090a;
+  --ink: #ecece9;
+  --muted: #a6a6a1;
+  --accent: #f0633f;
+  --gutter: clamp(1rem, 0.55rem + 1.8vw, 2.25rem);
+  color-scheme: dark;
 }
 
 @theme inline {
-  --font-display: "Bricolage Grotesque Variable", "Zen Kaku Gothic New", system-ui, sans-serif;
-  --font-sans: "Zen Kaku Gothic New", "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-display: "Stack Sans Headline", "Zen Kaku Gothic New", system-ui, sans-serif;
+  /* Stack Sans has no CJK glyphs, so Japanese falls through to Zen Kaku Gothic New. */
+  /* Stack Sans は和文を持たないため、日本語は Zen Kaku Gothic New に落ちる。 */
+  --font-sans: "Stack Sans Text", "Zen Kaku Gothic New", system-ui, sans-serif;
   --color-bg: var(--bg);
-  --color-art-bg: var(--art-bg);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
-  --color-line: var(--line);
   --color-accent: var(--accent);
+  --spacing-gutter: var(--gutter);
+  --text-small: 0.875rem;
+  --text-body: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+  --text-item: clamp(1.375rem, 1.05rem + 1vw, 2rem);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -51,37 +47,45 @@
   }
 
   ::selection {
-    background-color: var(--ink);
+    background-color: var(--accent);
     color: var(--bg);
   }
 
   :focus-visible {
     outline: 2px solid var(--accent);
-    outline-offset: 4px;
+    outline-offset: 6px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 }
 
-/* Load-in: the list writes itself in after the headline (hierarchy, not decoration). */
+/* Entrances: hidden only once script has promised to reveal them. / スクリプトが表示を保証できるときだけ隠す */
 @media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    animation: reveal 1s var(--ease-out-expo) both;
-    animation-delay: calc(var(--i, 0) * 90ms + 150ms);
+  html.js .rise {
+    animation: rise 1.1s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 80ms + 300ms);
   }
 
-  .art-fade {
-    animation: art-fade 1.6s ease-out both;
-  }
-}
-
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
+  html.js .letter {
+    display: inline-block;
+    animation: letter 1.4s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 50ms + 150ms);
   }
 }
 
-@keyframes art-fade {
+@keyframes rise {
   from {
     opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes letter {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
   }
 }

@@ -1,0 +1,15 @@
+---
+/**
+ * Full-screen WebGL background. Purely decorative; hidden from assistive tech.
+ * 全画面の WebGL 背景。装飾のみなので支援技術からは隠す。
+ */
+---
+
+<canvas data-field aria-hidden="true" class="pointer-events-none fixed inset-x-0 top-0 -z-10 block h-lvh w-full"></canvas>
+
+<script>
+  import { mountField } from "../scripts/field/mount";
+
+  const canvas = document.querySelector<HTMLCanvasElement>("canvas[data-field]");
+  if (canvas) mountField(canvas);
+</script>
