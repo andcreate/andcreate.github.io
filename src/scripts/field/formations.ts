@@ -128,7 +128,7 @@ export function sampleCubes(count: number): Cloud {
   return out;
 }
 
-/** Documents: pages stacked and slightly fanned. / Documents：少しずらして重ねたページ */
+/** Books (Amazon): pages stacked and slightly fanned. / 著作（Amazon）：少しずらして重ねたページ */
 export function sampleLayers(count: number): Cloud {
   const pages = 6;
   const w = AMP_HEIGHT * 0.8;

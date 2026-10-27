@@ -39,10 +39,10 @@ export const destinations: readonly Destination[] = [
   },
   {
     id: "docs",
-    title: "Documents",
-    brand: "#StudioLouie",
-    description: "アセットの使い方",
-    href: "https://andcreate.github.io/vdc/",
-    label: "andcreate.github.io/vdc",
+    title: "Amazon",
+    brand: "Eisuke Akimoto",
+    description: "著作一覧",
+    href: "https://www.amazon.co.jp/stores/author/B0141769DO",
+    label: "amazon.co.jp",
   },
 ];
